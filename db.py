@@ -1,15 +1,14 @@
 """
-    1° - Importa as classes do "models" e salva todas com "table=True" no "metadata" 
+    1° - Importa as classes do "models" e salva as com "table=True" no "metadata" 
     da classe mãe SQLModel
 
-    2° - Cria as tabelas e o banco apenas se o arquivo for executado
+    2° - Cria as tabelas e o banco - apenas se o arquivo for executado
 """
 
 # Importa o SQLModel, atualizando o metadata
 from sqlmodel import SQLModel, create_engine, Session
 
-# Importe as classes da pasta "models", uma por uma
-# Com isso, salva cada uma no metadata
+# Importa as classes e salva no metadata
 from models import item
 
 sqlite_file_name = "database.db"
@@ -23,16 +22,16 @@ def get_session():
     session = Session(engine)
     
     try:
-        # Retorne a sessão e pause a execução da função
+        # Lança a sessão e pause a execução da função
         yield session
 
-        # Retorna após o uso
+        # Continua a execução da função
         # Realiza o commit 
         session.commit()
     except Exception:
         # Desfaz todas as alterações feitas antes do erro
         session.rollback()
-        # Lança o erro para a rota que retorna o status code  
+        # Devolve o erro para a rota, evitando um "falso positivo"  
         raise
     finally:
         # Independente do que acontecer, fecha a sessão
